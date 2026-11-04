@@ -178,6 +178,10 @@ jobs:
     needs: [docs-scope, changed-scope, check]
     if: needs.docs-scope.outputs.docs_only != 'true' && (github.event_name == 'push' || needs.changed-scope.outputs.run_node == 'true')
     runs-on: ubuntu-24.04
+    env:
+      # vmForks workers keep growing. The three parallel vitest processes used all 16 GB
+      # and the runner was killed. Plain forks, as on Windows, peak near 3 GB.
+      OPENCLAW_TEST_VM_FORKS: 0
     strategy:
       fail-fast: false
       matrix:
